@@ -5,7 +5,9 @@ import java.io.Serializable;
 public class Request implements Serializable {
     private String requestType;
     private Integer userId;
-    private Integer idBiletu; // Dodane dla nowego żądania
+    private Integer idBiletu;
+    private String additionalData;
+
 
     // Konstruktor dla rozkładu jazdy
     public Request(String requestType, Integer userId) {
@@ -21,8 +23,15 @@ public class Request implements Serializable {
         this.idBiletu = idBiletu;
     }
 
-    // Gettery
+    // Konstruktor dla zmiany emaila
+    public Request(String requestType, Integer userId, String additionalData) {
+        this.requestType = requestType;
+        this.userId = userId;
+        this.additionalData = additionalData;
+    }
+
     public String getRequestType() { return requestType; }
     public Integer getUserId() { return userId; }
     public Integer getIdBiletu() { return idBiletu; }
+    public String getAdditionalData() { return additionalData; }
 }
