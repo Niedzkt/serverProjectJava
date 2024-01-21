@@ -1,10 +1,7 @@
 package org.example.server;
 
 import oracle.jdbc.internal.OracleTypes;
-import org.example.HistoriaZakupowBiletow;
-import org.example.InformacjeOBilecie;
-import org.example.Request;
-import org.example.RozkladJazdy;
+import org.example.*;
 import org.example.database.DatabaseManager;
 
 import java.io.*;
@@ -90,6 +87,21 @@ public class ClientHandler implements Runnable {
 
                             try (ResultSet rs = (ResultSet) cstmt.getObject(1)) {
                                 List<RozkladJazdy> list = convertResultSet(rs);
+                                out.writeObject(list);
+                            }
+                        }
+                    }
+
+                    if ("pobierz przystanki".equals(req.getRequestType())) {
+                        try (CallableStatement cstmt = conn.prepareCall("{call pobierz_przystanki(?)}")) {
+                            cstmt.registerOutParameter(1, OracleTypes.CURSOR);
+                            cstmt.execute();
+
+                            try (ResultSet rs = (ResultSet) cstmt.getObject(1)) {
+                                List<PrzystanekAutobusowy> list = new ArrayList<>();
+                                while (rs.next()) {
+                                    list.add(new PrzystanekAutobusowy(rs.getString("nazwa_przystanku"), rs.getString("lokalizacja")));
+                                }
                                 out.writeObject(list);
                             }
                         }
