@@ -33,19 +33,6 @@ public class ClientHandler implements Runnable {
         return list;
     }
 
-    private List<HistoriaZakupowBiletow> convertHistoriaResultSet(ResultSet rs) throws SQLException {
-        List<HistoriaZakupowBiletow> list = new ArrayList<>();
-        while (rs.next()) {
-            HistoriaZakupowBiletow obj = new HistoriaZakupowBiletow(
-                    rs.getTimestamp("data_zakupu"),
-                    rs.getTimestamp("data_waznosci"),
-                    rs.getDouble("cena")
-            );
-            list.add(obj);
-        }
-        return list;
-    }
-
     private List<InformacjeOBilecie> convertInformacjeOBilecieResultSet(ResultSet rs) throws SQLException {
         List<InformacjeOBilecie> list = new ArrayList<>();
         while (rs.next()) {
@@ -91,6 +78,18 @@ public class ClientHandler implements Runnable {
 
                             try (ResultSet rs = (ResultSet) cstmt.getObject(2)) {
                                 List<InformacjeOBilecie> list = convertInformacjeOBilecieResultSet(rs);
+                                out.writeObject(list);
+                            }
+                        }
+                    }
+
+                    if ("pobierz linie autobusowe".equals(req.getRequestType())) {
+                        try (CallableStatement cstmt = conn.prepareCall("{call pobierz_linie_autobusowe(?)}")) {
+                            cstmt.registerOutParameter(1, OracleTypes.CURSOR);
+                            cstmt.execute();
+
+                            try (ResultSet rs = (ResultSet) cstmt.getObject(1)) {
+                                List<RozkladJazdy> list = convertResultSet(rs);
                                 out.writeObject(list);
                             }
                         }
