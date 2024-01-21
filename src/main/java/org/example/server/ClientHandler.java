@@ -149,6 +149,31 @@ public class ClientHandler implements Runnable {
                             }
 
                         }
+                        if ("rejestracja".equals(req.getRequestType())) {
+                            try (CallableStatement cstmt = conn.prepareCall("{call zarejestruj_uzytkownika(?, ?, ?)}")) {
+                                cstmt.setString(1, req.getNazwaUzytkownika());
+                                cstmt.setString(2, req.getHaslo());
+                                cstmt.setString(3, req.getEmail());
+                                cstmt.execute();
+                                out.writeObject("Rejestracja zakończona sukcesem.");
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                                out.writeObject("Błąd podczas rejestracji: " + e.getMessage());
+                            }
+                        }
+                        if ("logowanie".equals(req.getRequestType())) {
+                            try (CallableStatement cstmt = conn.prepareCall("{call zaloguj_uzytkownika(?, ?, ?)}")) {
+                                cstmt.setString(1, req.getEmail());
+                                cstmt.setString(2, req.getHaslo());
+                                cstmt.registerOutParameter(3, Types.INTEGER);
+                                cstmt.execute();
+                                int wynikLogowania = cstmt.getInt(3);
+                                out.writeObject(wynikLogowania == 1);
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                                out.writeObject(false);
+                            }
+                        }
 
                     }
                 }

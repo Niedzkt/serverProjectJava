@@ -7,6 +7,9 @@ public class Request implements Serializable {
     private Integer userId;
     private Integer idBiletu;
     private String additionalData;
+    private String nazwaUzytkownika;
+    private String haslo;
+    private String email;
 
 
     // Konstruktor dla rozkładu jazdy
@@ -30,8 +33,26 @@ public class Request implements Serializable {
         this.additionalData = additionalData;
     }
 
+    // Konstruktor dla rejestracji użytkownika
+    public Request(String requestType, String nazwaUzytkownika, String haslo, String email) {
+        this.requestType = requestType;
+        this.nazwaUzytkownika = nazwaUzytkownika;
+        this.haslo = haslo;
+        this.email = email;
+    }
+
+    // Konstruktor dla logowania
+    public Request(String requestType, String email, String haslo) {
+        this.requestType = requestType;
+        this.email = email;
+        this.haslo = haslo;
+    }
+
     public String getRequestType() { return requestType; }
     public Integer getUserId() { return userId; }
     public Integer getIdBiletu() { return idBiletu; }
     public String getAdditionalData() { return additionalData; }
+    public String getNazwaUzytkownika() { return nazwaUzytkownika; }
+    public String getHaslo() { return haslo; }
+    public String getEmail() { return email; }
 }
