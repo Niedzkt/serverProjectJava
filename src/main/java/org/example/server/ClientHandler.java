@@ -174,6 +174,21 @@ public class ClientHandler implements Runnable {
                                 out.writeObject(false);
                             }
                         }
+                        if ("dodaj_do_historii".equals(req.getRequestType())) {
+                            try (CallableStatement cstmt = conn.prepareCall("{call dodaj_do_historii_zakupu(?, ?)}")) {
+                                cstmt.setInt(1, req.getUserId());
+                                cstmt.setInt(2, req.getIdBiletu());
+                                int affectedRows = cstmt.executeUpdate();
+                                if (affectedRows > 0) {
+                                    out.writeObject("Dodano do historii zakupów.");
+                                } else {
+                                    out.writeObject("Nie udało się dodać do historii zakupów.");
+                                }
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                                out.writeObject("Błąd: " + e.getMessage());
+                            }
+                        }
 
                     }
                 }

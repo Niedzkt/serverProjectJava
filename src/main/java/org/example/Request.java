@@ -48,6 +48,7 @@ public class Request implements Serializable {
         this.haslo = haslo;
     }
 
+
     public String getRequestType() { return requestType; }
     public Integer getUserId() { return userId; }
     public Integer getIdBiletu() { return idBiletu; }
